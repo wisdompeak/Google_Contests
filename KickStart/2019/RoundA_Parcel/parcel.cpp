@@ -12,7 +12,7 @@
 
 using namespace std;
 
-bool OK(int R, int C, vector<string>&grid, vector<vector<int>>&visited, int K)
+bool OK(int R, int C, vector<string>&grid, vector<vector<int>>&steps, int K)
 {
     vector<int>s(4, INT_MIN/2);
         
@@ -21,7 +21,7 @@ bool OK(int R, int C, vector<string>&grid, vector<vector<int>>&visited, int K)
         {
             if (grid[i][j]=='1')
                 continue;
-            if (visited[i][j]<=K)
+            if (steps[i][j]<=K)
                 continue;
             s[0] = max(s[0],i+j);
             s[1] = max(s[1],i-j);
@@ -47,7 +47,7 @@ bool OK(int R, int C, vector<string>&grid, vector<vector<int>>&visited, int K)
 
 long solver(int R, int C, vector<string>&grid)
 {
-    auto visited = vector<vector<int>>(R,vector<int>(C,-1));
+    auto steps = vector<vector<int>>(R,vector<int>(C,-1));
     queue<pair<int,int>>q;
     auto dir = vector<pair<int,int>>({{1,0},{-1,0},{0,1},{0,-1}});
     
@@ -56,7 +56,7 @@ long solver(int R, int C, vector<string>&grid)
         {
             if (grid[i][j]=='1')
             {
-                visited[i][j] = 0;
+                steps[i][j] = 0;
                 q.push({i,j});
             }
         }
@@ -77,8 +77,8 @@ long solver(int R, int C, vector<string>&grid)
                 int i = x+dir[k].first;
                 int j = y+dir[k].second;
                 if (i<0||i>=R||j<0||j>=C) continue;
-                if (visited[i][j]!=-1) continue;
-                visited[i][j] = step;
+                if (steps[i][j]!=-1) continue;
+                steps[i][j] = step;
                 q.push({i,j});
             }
         }
@@ -89,7 +89,7 @@ long solver(int R, int C, vector<string>&grid)
     while (left<right)
     {
         int K = left+(right-left)/2;
-        if (OK(R,C,grid,visited,K))
+        if (OK(R,C,grid,steps,K))
             right = K;
         else
             left = K+1;
